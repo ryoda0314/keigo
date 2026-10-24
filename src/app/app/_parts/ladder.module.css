@@ -1,0 +1,38 @@
+/* A branch as steps: each raised word sits one step higher and further right, the everyday word at the bottom. */
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.step {
+  display: flex; align-items: baseline; gap: 12px; padding: 8px 0 8px calc(var(--h) * 28px);
+  border-bottom: 1px solid var(--line); animation: grow 0.45s ease-out both;
+}
+.step:last-child { border-bottom: 0; }
+/* The branch grows from the bottom: the everyday word first, then each step above it. */
+.step:nth-last-child(2) { animation-delay: 0.08s; }
+.step:nth-last-child(3) { animation-delay: 0.16s; }
+.step:nth-last-child(4) { animation-delay: 0.24s; }
+@keyframes grow { from { opacity: 0; transform: translateY(8px); } }
+.word {
+  flex-shrink: 0; min-height: 36px; padding: 0 12px; border: 1px solid var(--line-2); border-radius: 999px;
+  background: var(--paper); font-family: var(--font-ko); font-size: 17px; font-weight: 600; color: var(--ink); cursor: pointer;
+}
+.word:hover { border-color: var(--accent); }
+.current { border-color: var(--accent); background: var(--tint); color: var(--accent); }
+.meaning { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+.side { font-size: 12px; font-weight: 600; color: var(--accent); }
+.whoFor { font-size: 12.5px; color: var(--muted); }
+
+/* A branch in one line. */
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.level { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.sep { color: var(--faint); font-size: 15px; padding: 0 2px; }
+.or { color: var(--faint); font-size: 13px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 11px;
+  border: 1px solid var(--line-2); border-radius: 999px; background: var(--paper);
+  font-family: var(--font-ko); font-size: 15px; font-weight: 600; color: var(--accent); cursor: pointer;
+}
+.chip:hover { border-color: var(--accent); }
+.base { color: var(--ink-2); font-weight: 500; border-style: dashed; }
+
+.dots { display: inline-flex; gap: 2px; }
+.dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--line-2); }
+.dots .on { background: var(--accent); }

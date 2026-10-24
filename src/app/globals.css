@@ -1,0 +1,143 @@
+/* ことのえだ (after ことのあめ, ことのおと, ことのは and ことのね): the same paper, ink and one accent, taken from
+   ことのあめ's icon. A raised word met before comes back in the again violet.
+   No gradients or shadows inside the app; hairlines separate. */
+:root {
+  --paper: #fcfbf8;
+  --surface: #f1f4f8;
+  --ink: #172033;
+  --ink-2: #3b4558;
+  --muted: #5c6578;
+  --faint: #8c94a5;
+  --line: #e4e7ec;
+  --line-2: #d4d9e1;
+  --danger: #b42318;
+  --danger-tint: #fdf0ee;
+
+  --accent: #0a64f0;
+  --tint: #e6f0ff;
+  /* Something meeting the learner again. */
+  --again: #6a4fe0;
+  --again-tint: #efebff;
+
+  --radius: 12px;
+  --tap: 44px;
+  /* Room under the bottom bar: the home indicator's inset, less what its own margin already leaves clear. */
+  --nav-bottom: max(8px, env(safe-area-inset-bottom, 0px) - 12px);
+
+  --font-ui: var(--font-plex), var(--font-plex-jp), var(--font-plex-kr), "Hiragino Sans", "Yu Gothic", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-ko: var(--font-plex-kr), "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-ja: var(--font-plex-jp), "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-en: var(--font-plex), "Helvetica Neue", sans-serif;
+  --font-mincho: var(--font-shippori), "Hiragino Mincho ProN", "Yu Mincho", serif;
+
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+/* Something scrolled into view at the top stops below the status bar strip, not under it. */
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+
+/* Every page starts below the phone's status bar; .status-fill paints the bar itself. */
+body {
+  padding-top: env(safe-area-inset-top, 0px);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  /* Japanese wraps between phrases (今日は出かける／気分じゃない, not …気分じゃな／い), and a paragraph does not end on a
+     lone word. English wraps as before; where auto-phrase is not known (Safari) it wraps as it always did. */
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+/* A solid strip behind the phone's status bar (zero tall where there is none). Without it iOS draws a gradient over
+   whatever scrolls underneath. */
+.status-fill {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 15;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--status-fill, var(--paper));
+  pointer-events: none;
+}
+
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+h1, h2, h3 { text-wrap: balance; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.t-ja { font-family: var(--font-ja); }
+.t-en { font-family: var(--font-en); }
+.t-ko { font-family: var(--font-ko); word-break: keep-all; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* Shared controls */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 52px; padding: 0 24px; border-radius: var(--radius);
+  border: 1px solid var(--accent); background: var(--accent); color: #fff;
+  font-size: 16px; font-weight: 600; text-decoration: none; cursor: pointer;
+}
+.btn:disabled { opacity: 0.55; cursor: default; }
+.btn-quiet {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 0 18px; border-radius: var(--radius);
+  border: 1px solid var(--line-2); background: var(--paper); color: var(--ink);
+  font-size: 15px; font-weight: 500; text-decoration: none; cursor: pointer;
+}
+.btn-quiet:disabled { color: var(--faint); cursor: default; }
+.btn-quiet[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--tint); }
+.link-button {
+  border: 0; background: none; padding: 0; color: var(--accent); font-size: 14px; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 0.25em;
+}
+
+/* The wordmark in mincho. */
+.wordmark-kana { font-family: var(--font-mincho); font-weight: 700; letter-spacing: 0.06em; }
+
+.label { font-size: 13px; font-weight: 600; color: var(--muted); margin: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* Highlights (components/Marked.tsx) */
+/* The tint reaches a little past the words (padding) without moving them (the same margin back), so a lit expression
+   inside a corrected stretch keeps the spaces, the line breaks and the underline of the sentence around it unbroken. */
+.hl-mark { background: var(--tint); color: var(--accent); border-radius: 0.15em; padding: 0 0.1em; margin: 0 -0.1em; animation: mark-in 0.5s ease-out both; }
+.hl-again { background: var(--again-tint); color: var(--again); border-radius: 0.15em; padding: 0 0.1em; margin: 0 -0.1em; }
+/* A lit expression cut into pieces by a change inside it: rounded only at its two ends. */
+.hl-join-l { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.hl-join-r { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+@keyframes mark-in { from { background: transparent; color: inherit; } }
+.hl-ins { color: var(--accent); font-weight: 600; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.3em; }
+.hl-del { color: var(--faint); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.hl-button { cursor: pointer; }
+.hl-button:hover { text-decoration: underline; text-underline-offset: 0.25em; }
+
+/* Korean words lit (components/Ko.tsx). A raised word in the accent, with the everyday word it stands for above it in
+   small type; the plain -시- of a verb underlined quietly; an everyday word dotted, set against the raised ones. Like
+   .hl-mark, the tint reaches past the letters without moving them. */
+ruby { ruby-position: over; ruby-align: center; }
+rt { font-family: var(--font-ko); font-size: 0.5em; font-weight: 500; line-height: 1.1; letter-spacing: 0; color: var(--muted); user-select: none; }
+.lit { background: var(--tint); color: var(--accent); border-radius: 0.15em; padding: 0 0.1em; margin: 0 -0.1em; }
+.lit-again { background: var(--again-tint); color: var(--again); border-radius: 0.15em; padding: 0 0.1em; margin: 0 -0.1em; }
+.lit rt { color: var(--accent); opacity: 0.75; }
+.lit-again rt { color: var(--again); opacity: 0.75; }
+.lit-si { text-decoration: underline; text-decoration-color: var(--line-2); text-decoration-thickness: 1.5px; text-underline-offset: 0.32em; }
+.lit-si rt { color: var(--faint); }
+.lit-base { text-decoration: underline dotted; text-decoration-color: var(--faint); text-decoration-thickness: 1.5px; text-underline-offset: 0.32em; }
+.lit-button { cursor: pointer; }
+.lit-button:hover { text-decoration: underline; text-underline-offset: 0.32em; }
+/* 上げてみる: a word that changed comes up a step. */
+.rise { display: inline-block; animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(0.55em); } }

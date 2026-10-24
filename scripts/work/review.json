@@ -1,0 +1,122 @@
+[
+  {
+    "file": "puck/0417de48595fd698.mp3",
+    "key": "be.7@m",
+    "voice": "Puck",
+    "text": "어머님, 혹시 서준이 집에 있어요?",
+    "heard": "어머님, 혹시 서진이 집에 있어요?",
+    "score": 0.92
+  },
+  {
+    "file": "achird/7a24bc910f66a2f0.mp3",
+    "key": "be-a.1r",
+    "voice": "Achird",
+    "text": "응, 왜?",
+    "heard": "오, 왜?",
+    "score": 0.5
+  },
+  {
+    "file": "puck/06b581803a4977f0.mp3",
+    "key": "ask-b.1@m",
+    "voice": "Puck",
+    "text": "내일 봐!",
+    "heard": "Nehir var.",
+    "score": 0
+  },
+  {
+    "file": "leda/b764f50c02bcc2da.mp3",
+    "key": "name.9@f",
+    "voice": "Leda",
+    "text": "생일 축하해!",
+    "heard": "千円近え。",
+    "score": 0
+  },
+  {
+    "file": "leda/aeee9828ea09a539.mp3",
+    "key": "name-a.2@f",
+    "voice": "Leda",
+    "text": "선배 아버님 성함이 어떻게 되세요?",
+    "heard": "선배의 아버님 성함이 어떻게 되세요?",
+    "score": 0.93
+  },
+  {
+    "file": "leda/5c34056ae2f57ab8.mp3",
+    "key": "name-b.3@f",
+    "voice": "Leda",
+    "text": "교수님, 생신 축하드립니다!",
+    "heard": "교수님, 승진 축하드립니다.",
+    "score": 0.82
+  },
+  {
+    "file": "puck/7f0b6177dc21eb01.mp3",
+    "key": "name-b.3@m",
+    "voice": "Puck",
+    "text": "교수님, 생신 축하드립니다!",
+    "heard": "조수님, 생신 축하드립니다.",
+    "score": 0.91
+  },
+  {
+    "file": "sulafat/ed79d6cb92f6d50f.mp3",
+    "key": "body-a.2r",
+    "voice": "Sulafat",
+    "text": "응, 약 먹어서 괜찮아.",
+    "heard": "응, 양 먹어서 괜찮아.",
+    "score": 0.88
+  },
+  {
+    "file": "achird/809e1151cda5db2c.mp3",
+    "key": "body-b.1r",
+    "voice": "Achird",
+    "text": "응, 좀.",
+    "heard": "흥 좀",
+    "score": 0.5
+  },
+  {
+    "file": "gacrux/55e12d4f59f56187.mp3",
+    "key": "body-b.2r",
+    "voice": "Gacrux",
+    "text": "응, 조금 아프다.",
+    "heard": "음, 조금 아프다.",
+    "score": 0.83
+  },
+  {
+    "file": "puck/e5c2d5db5e473df0.mp3",
+    "key": "family.7@m",
+    "voice": "Puck",
+    "text": "교수님, 따님이 몇 살이에요?",
+    "heard": "교수님, 탄이님 몇 살이에요?",
+    "score": 0.82
+  },
+  {
+    "file": "alnilam/d9087db489f07281.mp3",
+    "key": "family-b.2r",
+    "voice": "Alnilam",
+    "text": "네 분 오신대.",
+    "heard": "네 번 오신대.",
+    "score": 0.8
+  },
+  {
+    "file": "puck/0a16a90583d00f1b.mp3",
+    "key": "me.4@m",
+    "voice": "Puck",
+    "text": "이거 내 거야.",
+    "heard": "이거 내꺼야.",
+    "score": 0.8
+  },
+  {
+    "file": "puck/392494c299967fbb.mp3",
+    "key": "attach.1@m",
+    "voice": "Puck",
+    "text": "민수가 이거 줬어.",
+    "heard": "민수가 이거졌어.",
+    "score": 0.86
+  },
+  {
+    "file": "leda/dd9297dbc1289fba.mp3",
+    "key": "absent.s1@f",
+    "voice": "Leda",
+    "text": "열이 나서 못 갔어요. 미리 말씀 못 드려서 죄송합니다.",
+    "heard": "요리나서 못 갔어요. 미리 말씀 못 드려서 죄송합니다.",
+    "score": 0.9
+  }
+]

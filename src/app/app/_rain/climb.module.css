@@ -1,0 +1,24 @@
+/* 上げてみる: the people in a row from the nearest to the highest; the line climbs as the step does. */
+.climb { display: flex; flex-direction: column; gap: 12px; padding: 16px; border: 1px solid var(--line-2); border-radius: var(--radius); }
+.climb + .climb { margin-top: 4px; }
+.title { margin: 0; font-size: 16px; font-weight: 600; }
+.people { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 6px; }
+/* Each one a little higher than the one before, like steps. */
+.people > li:nth-child(2) { margin-bottom: 4px; }
+.people > li:nth-child(3) { margin-bottom: 8px; }
+.people > li:nth-child(4) { margin-bottom: 12px; }
+.person {
+  min-height: 34px; padding: 0 12px; border: 1px solid var(--line-2); border-radius: 999px; background: var(--paper);
+  font-size: 13px; color: var(--muted); cursor: pointer;
+}
+.person:hover { border-color: var(--accent); }
+.past { color: var(--ink-2); border-color: var(--line-2); background: var(--surface); }
+.here { border-color: var(--accent); background: var(--tint); color: var(--accent); font-weight: 600; }
+
+.stage { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; animation: up 0.45s ease-out both; }
+@keyframes up { from { opacity: 0; transform: translateY(10px); } }
+.reply { padding: 10px 12px; border-left: 2px solid var(--line-2); }
+
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.toWhom { font-weight: 500; opacity: 0.85; }
+.top { margin: 0; font-size: 13px; color: var(--muted); }

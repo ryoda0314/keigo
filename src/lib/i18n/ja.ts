@@ -1,0 +1,202 @@
+// UI copy, written plainly from the learner's side. Client components import this file or get strings as props.
+import type { EventKind } from "../record.ts";
+
+// ことのあめ: the sister app whose accounts (and database) this one uses.
+const KOTONOAME_URL = (process.env.NEXT_PUBLIC_KOTONOAME_URL || "https://polylinga.vercel.app").replace(/\/$/, "");
+
+export const ja = {
+  name: "ことのえだ",
+  kotonoame: { name: "ことのあめ", url: KOTONOAME_URL },
+  description:
+    "友だちに言えることを、目上の人にも。반말から入った人が、말씀・잡수시다 のような上の語を、文と人と声で身につける。同じひとことが相手を替えて段を上り、人と場面が渡されたら、自分ならどう返すかを言ってみる。",
+
+  intro: {
+    lead: "友だちに言えることを、目上の人にも。",
+    body: [
+      "友だちとの반말なら話せる。でも、先生や友だちのおばあさんの前だと、言葉が出てこない。足りないのは語尾ではなく、말씀・잡수시다 のような語。",
+      "同じひとことが、相手を替えて段を上っていく。上の語には、いつも ふだんの語が添えてあるので、どの語の上なのかがすぐ分かる。",
+      "人と場面が渡されたら、自分ならどう返すかを言ってみる。반말や日本語を混ぜても、その人に合う言い方に直り、相手は中身に返してくれる。",
+    ],
+    sample: { input: "할머니 밥 먹었어요?", fixed: "할머니, 진지 드셨어요?" },
+    sampleLabel: { input: "言ってみた文", fixed: "直した文" },
+    start: "はじめる",
+    note: "登録はいりません。記録はこの端末に残ります。",
+    link: "ことのあめのアカウントがあれば、つなぐと記録がどの端末でも続きます",
+  },
+
+  nav: { label: "メニュー", rain: "浴びる", scene: "場面で言う", eda: "枝", me: "自分" },
+
+  common: {
+    play: "聞く",
+    close: "閉じる",
+    back: "戻る",
+    translation: "訳",
+    loading: "読み込んでいます…",
+    me: "わたし",
+  },
+
+  who: {
+    to: (name: string) => `→ ${name}`,
+    about: (name: string) => `${name}のこと`,
+  },
+
+  rain: {
+    title: "浴びる",
+    lead: "文が流れてきます。誰に話しているか、誰のことかを見ながら。色の付いた語の上には、ふだんの語。",
+    playAll: "流す",
+    replay: "もう一度流す",
+    branches: "この雨の枝",
+    climb: "上げてみる",
+    climbLead: "相手を替えると、同じひとことが段を上る。",
+    up: "上げる",
+    top: "いちばん上まで上がりました",
+    again: "はじめから",
+    next: "次の雨",
+    choose: "雨を選ぶ",
+    chooseTitle: "雨を選ぶ",
+    met: "浴びた",
+    toScene: "場面で言ってみる",
+  },
+
+  scene: {
+    title: "場面で言う",
+    mine: "わたしの事情",
+    ask: "わたしならどう返す？",
+    samples: "見本を見る",
+    samplesTitle: "返し方の見本",
+    samplesNote: "どれか一つが正解ではありません。見本を開いて返すと、記録では「見本あり」になります。",
+    use: "これを使う",
+    next: "次の場面",
+    choose: "場面を選ぶ",
+    chooseTitle: "場面を選ぶ",
+    otherReplies: "ほかの返し方",
+    with: (name: string) => `${name}が返事をします`,
+  },
+
+  composer: {
+    placeholder: "言いたいことを。韓国語が出てこないところは日本語のままで。",
+    send: "送る",
+    sending: "直しています…",
+    mic: "声で言う",
+    stopMic: "止める",
+    listening: "聞いています…（止めるときはもう一度押す）",
+    hearing: "文字にしています…",
+    micDenied: "マイクが使えません。ブラウザの設定でマイクを許可してください。",
+    micMissing: "この端末では録音できません。",
+    hearFailed: "うまく聞き取れませんでした。もう一度か、文字で。",
+    failed: "届きませんでした。電波のよいところで、もう一度送ってください。",
+    tooMany: "続けて送りすぎました。少し時間をおいてから、もう一度。",
+  },
+
+  turn: {
+    natural: "そのままで自然",
+    why: "直したところ",
+    gaps: "今回韓国語で言えなかったところ",
+    gapsNote: "今回の文で使った言い方です。ほかの場面では、ほかの言い方もあります。",
+    gapsShort: "日本語で補った",
+    words: "この文の上の語",
+    wordsShort: "上の語",
+    origin: { mine: "自分で使った", ai: "AIが補った" },
+    details: "くわしく",
+    askOr: "どれでもなければ、書き直して送ってください。",
+    unanswered: "この文は、直す前に途切れました。",
+    sendAgain: "もう一度送る",
+    support: { opened: "見本あり", borrowed: "見本をそのまま" },
+    spoken: "声で",
+  },
+
+  eda: {
+    title: "枝",
+    lead: "ふだんの語から、上の語へ。押すと、その語の枝と、出てくる文が見られます。",
+    rare: "もっと改まった語",
+    stageNote: "点は、これまでの自分の出会い方です。点数ではありません。",
+    stages: ["まだ", "出会った", "支えがあって使った", "自分で使えた"],
+    si: "目上の人がすることには、ふつうの -시- も付く（오다 → 오셨어요、하다 → 하세요）。",
+  },
+
+  branch: {
+    who: "使う相手",
+    hanja: "漢字",
+    does: "目上の人がする",
+    toward: "目上の人にする",
+    lines: "この語が出てくる文",
+    here: "ここでは",
+    history: "これまで",
+    kinds: { met: "出会った", looked: "開いた", ai: "AIが補った", borrowed: "見本を使った", remade: "見本ありで使った", own: "自分で使った" } satisfies Record<
+      EventKind,
+      string
+    >,
+    toRain: (title: string) => `「${title}」の雨を浴びる`,
+    rare: "もっと改まった語（めったに使わない）",
+  },
+
+  me: {
+    title: "自分",
+    lead: "これまでを振り返る場所。点数にはせず、ほかの人とも比べません。",
+    grown: "できたこと",
+    grownLead: "見本やAIの助けで出会った上の語を、あとで自分から使えたとき。",
+    grownEmpty: "まだありません。AIが補った上の語や、見本で使った上の語を、あとで自分から使えたとき、ここに残ります。",
+    grownItem: (before: EventKind) =>
+      ({ ai: "前はAIが補った", borrowed: "前は見本をそのまま使った", remade: "前は見本を見ながら使った", looked: "前に開いて見た", met: "", own: "" })[before],
+    sofar: "これまで",
+    stats: { rains: "浴びた雨", scenes: "場面で言った", said: "送った文", own: "自分で使えた上の語" },
+    sofarNote: "自分のための数です。",
+    threads: "場面のやりとり",
+    threadsEmpty: "まだありません。",
+    settingsLink: "設定とアカウント",
+    linkedShort: (email: string) => `${email} とつないでいます`,
+    localShort: "記録はこの端末だけに残っています。",
+    connect: "つなぐ",
+  },
+
+  settings: {
+    title: "設定とアカウント",
+    listen: "聞きかた",
+    sound: "自動で流す",
+    soundLead: "雨や相手の返事を、自動で流します。電車の中ではオフにしても。",
+    speed: "韓国語の速さ",
+    speeds: { "0.8": "ゆっくり", "1": "ふつう" } as Record<string, string>,
+    voice: "わたしの声",
+    voices: { f: "女性の声", m: "男性の声" } as Record<string, string>,
+    voiceLead: "わたしが言う文を、どちらの声で聞くか。",
+    see: "見かた",
+    ruby: "上の語に、ふだんの語を添える",
+    translation: "訳をはじめから出す",
+    account: "アカウント",
+    linkLead: "ことのあめのアカウントでつなぐと、記録がアカウントに保存され、スマホでもパソコンでも続きから使えます。",
+    link: "ことのあめのアカウントでつなぐ",
+    linked: (email: string) => `${email} とつないでいます`,
+    linkedLead: "記録はこの端末と、ことのあめのアカウントの両方に残ります。",
+    unlink: "ログアウト",
+    record: "記録",
+    size: (words: number, threads: number) => `上の語 ${words}、場面のやりとり ${threads} の記録があります。`,
+    reset: "この端末の記録を消す",
+    resetConfirm: "この端末に残っている記録をすべて消します。よろしいですか？",
+    resetLinked: "記録を消す",
+    resetLinkedConfirm: "この端末と、ことのあめのアカウントに残っている、ことのえだの記録をすべて消します。よろしいですか？",
+    done: "消しました。",
+  },
+
+  login: {
+    title: "ことのあめのアカウントでつなぐ",
+    lead: "ことのあめと同じメールアドレスとパスワードで。つなぐと、ことのえだの記録がアカウントに保存されます。",
+    email: "メールアドレス",
+    password: "パスワード",
+    submit: "つなぐ",
+    signingIn: "つないでいます…",
+    noAccount: "アカウントを作るとき、パスワードを忘れたとき、Google だけで登録していてパスワードがないときは、",
+    toKotonoame: "ことのあめで",
+    already: (email: string) => `${email} とつないでいます。`,
+    toApp: "続ける",
+    signOut: "ログアウト",
+    note: "つながなくても、すべてこの端末で使えます。",
+    errors: {
+      credentials: "メールアドレスかパスワードが違います。",
+      unconfirmed: "メールアドレスの確認がまだです。ことのあめから届いた確認メールのリンクを先に押してください。",
+      busy: "試行が続いたため、少し待つ必要があります。1分ほどしてからもう一度。",
+      failed: "つなげませんでした。電波のよいところで、少し待ってからもう一度。",
+      unavailable: "いまはアカウントにつなげません。",
+      google: "Google でつなげませんでした。メールアドレスとパスワードでお試しください。",
+    },
+  },
+};

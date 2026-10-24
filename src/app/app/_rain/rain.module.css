@@ -1,0 +1,14 @@
+.head { display: flex; flex-direction: column; gap: 8px; padding: 20px 0 8px; }
+.title { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+.lead { margin: 0; font-size: 15px; line-height: 1.7; color: var(--ink-2); }
+.branches { display: flex; flex-direction: column; gap: 8px; padding: 10px 0 4px; }
+.controls { display: flex; gap: 10px; padding-top: 10px; }
+.hint { margin: 8px 0 0; font-size: 13px; line-height: 1.7; color: var(--muted); }
+
+/* The lines fall in from above and pile up, as in ことのあめ. */
+.lines { list-style: none; margin: 0; padding: 12px 0 8px; display: flex; flex-direction: column; gap: 14px; }
+.line { animation: fall 0.55s cubic-bezier(0.2, 0.8, 0.3, 1) both; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.line:last-child { border-bottom: 0; }
+@keyframes fall { from { opacity: 0; transform: translateY(-18px); } }
+
+.sheetTitle { margin: 0; font-size: 17px; font-weight: 600; }
