@@ -76,11 +76,16 @@ const SELF: Record<string, (text: string) => string> = {
   저희: () => "우리",
 };
 
+// 드시다 stands for 먹다 or 마시다. A word the AI lit has no mark to say which: with a drink just before it (따뜻한 커피
+// 드신대요) it is 마시다.
+const DRINK = /(?:커피|차|물|술|약주|주스|우유|음료|음료수|맥주|와인|소주|막걸리|라떼|아메리카노|녹차|홍차)\s?(?:를|을|는|은|도|만|좀|한\s?잔|두\s?잔)?\s*$/;
+
 /** The everyday word shown above a lit word: its mark's own, or the word's first everyday word. */
 export function everydayOf(span: Span, text: string): string | null {
   if (span.base) return span.base;
   const self = SELF[span.word];
   if (self) return self(text.slice(span.start, span.end));
+  if (span.word === "드시다" && DRINK.test(text.slice(0, span.start))) return "마시다";
   return WORD.get(span.word)?.base?.[0] ?? null;
 }
 

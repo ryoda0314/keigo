@@ -1,0 +1,47 @@
+{
+  "sleep-a.1@f": {
+    "src": "app/sleep-a.1@f.mp3",
+    "seconds": 1.056
+  },
+  "sleep-a.2@f": {
+    "src": "app/sleep-a.2@f.mp3",
+    "seconds": 2.16
+  },
+  "sleep-a.3@f": {
+    "src": "app/sleep-a.3@f.mp3",
+    "seconds": 2.208
+  },
+  "eat.6": {
+    "src": "app/eat.6.mp3",
+    "seconds": 2.424
+  },
+  "eat-a.2@f": {
+    "src": "app/eat-a.2@f.mp3",
+    "seconds": 2.064
+  },
+  "eat-a.3@f": {
+    "src": "app/eat-a.3@f.mp3",
+    "seconds": 2.592
+  },
+  "eat-a.4@f": {
+    "src": "app/eat-a.4@f.mp3",
+    "seconds": 2.592
+  },
+  "eat-a.4r": {
+    "src": "app/eat-a.4r.mp3",
+    "seconds": 3.552
+  },
+  "dinner": {
+    "src": "app/dinner.mp3",
+    "seconds": 4.056
+  },
+  "cafe-guest": {
+    "src": "app/cafe-guest.mp3",
+    "seconds": 1.896
+  },
+  "halmeoni.reply": {
+    "src": "voice/halmeoni.reply.395dfc6f.mp3",
+    "text": "아이고, 나는 아직 안 먹었다. 너 먹고 왔다니 다행이네.",
+    "seconds": 6.072
+  }
+}

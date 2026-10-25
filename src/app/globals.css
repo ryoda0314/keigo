@@ -133,6 +133,8 @@ rt { font-family: var(--font-ko); font-size: 0.5em; font-weight: 500; line-heigh
 .lit-again { background: var(--again-tint); color: var(--again); border-radius: 0.15em; padding: 0 0.1em; margin: 0 -0.1em; }
 .lit rt { color: var(--accent); opacity: 0.75; }
 .lit-again rt { color: var(--again); opacity: 0.75; }
+/* A change inside a lit word keeps the word's own colour (a word met before stays violet); its underline says it changed. */
+.lit .hl-ins, .lit-again .hl-ins { color: inherit; }
 .lit-si { text-decoration: underline; text-decoration-color: var(--line-2); text-decoration-thickness: 1.5px; text-underline-offset: 0.32em; }
 .lit-si rt { color: var(--faint); }
 .lit-base { text-decoration: underline dotted; text-decoration-color: var(--faint); text-decoration-thickness: 1.5px; text-underline-offset: 0.32em; }

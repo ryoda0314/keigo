@@ -63,7 +63,8 @@ record.
 - Marks name a word and the exact text in the line; `markSpans` places each where its text occurs, its core fires and no
   earlier mark is (the 께 of 께서 is not 께). `everydayOf` gives the word shown above it: the mark's own `base` when it is
   not the usual one (커피 드실래요? is 마시다, 축하드려요 is 하다, 몇 분 is 몇 명), わたし stepping down mapped back
-  (제가 → 내가), else the word's first everyday word.
+  (제가 → 내가), a 드시다 the AI lit right after a drink as 마시다 (따뜻한 커피 드신대요: the AI's words carry no
+  `base`), else the word's first everyday word.
 - Line ids are stable: audio is named by voice and text, and the record keeps rain and scene ids.
 
 ## The core (`src/lib`, pure, tested in `tests/`)
@@ -84,11 +85,14 @@ record.
 
 ## The app
 
-- `/` intro (static). `/app` 浴びる (`_rain/Rain.tsx`): the rain's branches as rows, its lines falling one by one with their
-  voices (`playInTurn`), each with who says it to whom (`WhoLine`) and its words lit; once all have fallen it counts as
-  bathed in, and its climbs open (`_rain/Climb.tsx`: the people as steps; 上げる moves one up, underlines what changed from
-  the step below, the lit words rise, and わたし's line and the reply are heard). Then 次の雨, 場面で言ってみる (the scene
-  holding most of its words, `go.ts`), 雨を選ぶ.
+- `/` intro (static). `/app` 浴びる (`_rain/Rain.tsx`), with `Steps` on top as in ことのおと (浴びる → 上げてみる →
+  場面で言う on a track; a step behind or, once the rain has fallen, ahead can be pressed). Each stage has the screen to
+  itself, so the climbs do not pile up under the rain:
+  - 浴びる: the rain's branches as rows, its lines falling one by one with their voices (`playInTurn`), each with who says
+    it to whom (`WhoLine`) and its words lit; once all have fallen it counts as bathed in, and 上げてみる opens.
+  - 上げてみる: one climb at a time (`_rain/Climb.tsx`: the people as steps; 上げる moves one up, underlines what changed
+    from the step below, the lit words rise, and わたし's line and the reply are heard). 次の組へ, and after the last
+    場面で言ってみる (the scene holding most of the rain's words, `go.ts`) and 次の雨.
 - `/app/scene` 場面で言う (`scene/ScenePage.tsx`): ことのは's scene with `Conversation` and `Composer` (Korean and Japanese
   mixed, the microphone through `/api/hear`); samples only when opened, recorded as support.
 - `/app/eda` 枝: every branch by group as a map to look over, each raised word with its dots. `/app/me` 自分: これまで,
@@ -96,11 +100,24 @@ record.
   the account, clearing the record). `/login`: ことのあめのアカウントでつなぐ (copied from ことのは).
 - `components/Ko.tsx` draws a Korean sentence: raised words lit (accent, or violet when met before) with the everyday word
   above as ruby, the plain -시- underlined quietly with its verb above, everyday words dotted, and a correction's changes
-  (`ins`/`del`) across them. `_parts/BranchHost.tsx` opens a word's branch over any screen (`useOpenBranch`): the sentence it
+  (`ins`/`del`) across them (a change inside a lit word keeps the word's colour, so a word met before stays violet). `_parts/BranchHost.tsx` opens a word's branch over any screen (`useOpenBranch`): the sentence it
   was pressed in, its branches as steps (`Ladder.tsx`), its note and hanja, the lines it turns up in, its history, and the
   way to its rain.
 - `components/audio.ts`: one sound at a time; prepared clips by key (`clipKey`: わたし's lines carry the chosen voice,
   `eat.1@f`), AI text through `/api/say`, the browser's Korean voice when nothing else plays.
+
+## The promotional film (`promo/`)
+
+- Its own Remotion 4 project (its own package.json; left out of the app's tsconfig and eslint), described in
+  `promo/README.md`, made the way ことのね's and ことのは's are: the app's screens drawn again beside one plain sentence at a
+  time, with Japanese narration by Gemini TTS (`promo/voice/lines.json`), never over a Korean voice.
+- It draws the screens from the app's CSS and copy (`promo/src/ui.tsx`, `promo/src/scenes/`) and takes the lines, marks
+  and branches from `src/content` itself (`markSpans`, `everydayOf`): when the look or the words change, change the film's
+  drawing too. The scene corrections and replies are real answers of `/api/turn`, kept in `promo/src/scene.json`. Every
+  moment is placed from the clips' lengths (`promo/src/timeline.ts`).
+- In `promo/`: `npm run assets` (the app's clips and icon, 할머니's reply voiced through `src/lib/tts.ts`, the fonts cut to
+  the film's characters), `npm run voice` (the narration; `--durations` after removing a line), `npm run music`,
+  `npm run render` (to `promo/out/`), `npm run stills -- <frame> ...`.
 
 ## Commands
 
@@ -112,8 +129,8 @@ record.
   line uses are removed.
 - `node --env-file=../polylinga/.env.local ../polylinga/scripts/migrate.mjs supabase/migrations/<file>.sql`: apply one
   migration to ことのあめ's database, in a transaction (ことのあめ's runner and connection settings).
-- `python design/make-icon.py` (Pillow): the placeholder icon (an open book, a branch, leaves at three heights) into
-  `public/icons/`, `src/app/icon.png`, `apple-icon.png`, `favicon.ico`, until the maker chooses a picture.
+- `python design/make-icons.py design/icon-source.png .` (Pillow, numpy): the icons from the picture the maker chose (see
+  Conventions).
 
 ## Conventions
 
@@ -122,6 +139,11 @@ record.
 - Colors and type are the sisters' (`src/app/globals.css`): paper, ink, one accent, `--again` violet for what comes back.
   No gradients, emoji or shadows inside the app; hairlines separate. Motion follows the branch: words rise a step
   (`.rise`), steps grow from the bottom; reduced motion stops all of it.
+- The app icon is the one picture with gradients: the image the maker chose (`design/icon-source.png`, generated: an open
+  book, a branch growing up from its spine, leaves at three heights in sky blue, blue and violet). `design/make-icons.py`
+  (ことのは's) cuts its cream card out of the white ground and the grey shadow around it, and writes `public/icons/`
+  (transparent corners; maskable at 78% on a full square, since the book's page tips reach 0.51 of the side from the
+  middle), `src/app/icon.png`, `apple-icon.png`, `favicon.ico`. `Logo` shows `icon-192.png`.
 - Pure modules imported by tests and scripts use `.ts` extensions in their imports (Node strips types).
 - Phone first; from 720 px the tabs become a column on the left (BottomNav, the sisters' CSS). A headless Chrome window
   cannot be narrower than about 500 px: to look at a phone width, set the width through the DevTools protocol

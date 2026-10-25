@@ -16,11 +16,12 @@ import { BranchRow } from "../_parts/Ladder";
 import { LineView } from "../_parts/LineView";
 import page from "../_parts/page.module.css";
 import { Climb } from "./Climb";
+import { Steps, type StepId } from "./Steps";
 import styles from "./rain.module.css";
 
 const t = ja.rain;
 
-/** 浴びる: a rain of lines falls in, one by one with their voices; then 上げてみる. */
+/** 浴びる: a rain of lines falls in, one by one with their voices; then 上げてみる, one climb at a time. */
 export function Rain() {
   const state = useRecord();
   const current = state?.current.rain;
@@ -51,6 +52,12 @@ function sceneFor(rainId: string): string | null {
   return best && best.n > 0 ? best.id : null;
 }
 
+const STEPS: { step: StepId; label: string }[] = [
+  { step: "rain", label: t.steps.rain },
+  { step: "climb", label: t.steps.climb },
+  { step: "scene", label: t.steps.scene },
+];
+
 function RainView({ rain, state }: { rain: RainContent; state: State }) {
   const router = useRouter();
   const open = useOpenBranch();
@@ -59,10 +66,15 @@ function RainView({ rain, state }: { rain: RainContent; state: State }) {
   const [shown, setShown] = useState(before ? rain.lines.length : 0);
   const [playing, setPlaying] = useState(false);
   const [choosing, setChoosing] = useState(false);
+  // 浴びる, then 上げてみる: each on its own, so the climbs do not pile up under the rain.
+  const [stage, setStage] = useState<"rain" | "climb">("rain");
+  const [climbAt, setClimbAt] = useState(0);
+  const [tops, setTops] = useState<Set<number>>(() => new Set());
   // Violet for words met before this rain began, not for those met in it now.
   const [since] = useState(() => Date.now());
   const done = shown >= rain.lines.length;
   const finished = useRef(before);
+  const scene = sceneFor(rain.id);
 
   useEffect(() => () => stop(), []);
 
@@ -93,73 +105,110 @@ function RainView({ rain, state }: { rain: RainContent; state: State }) {
     setPlaying(false);
   }
 
+  function toScene() {
+    if (!scene) return;
+    stop();
+    goToScene(scene);
+    router.push("/app/scene");
+  }
+
+  function go(step: StepId) {
+    stop();
+    if (step === "scene") return toScene();
+    setStage(step);
+    window.scrollTo({ top: 0 });
+  }
+
+  function nextClimb() {
+    stop();
+    setClimbAt(climbAt + 1);
+    window.scrollTo({ top: 0 });
+  }
+
   const next = () => {
     stop();
     commit((s) => setCurrent(s, { rain: pickNext(s, "rain", Date.now(), rain.id) }));
   };
-  const scene = sceneFor(rain.id);
+
+  const climb = rain.climbs[climbAt];
+  const lastClimb = climbAt === rain.climbs.length - 1;
 
   return (
     <>
-      <section className={styles.head}>
-        <h2 className={styles.title}>{rain.title}</h2>
-        <p className={styles.lead}>{rain.lead}</p>
-        <div className={styles.branches} aria-label={t.branches}>
-          {rain.branches.map((id) => {
-            const b = branchById(id);
-            return b ? <BranchRow key={id} branch={b} onWord={(word) => open({ word, from: { kind: "rain", id: rain.id } })} /> : null;
-          })}
-        </div>
-        <div className={styles.controls}>
-          <button type="button" className="btn" onClick={() => (playing ? stop() : void run())}>
-            <Icon name={done ? "replay" : "speaker"} size={20} />
-            {done ? t.replay : t.playAll}
-          </button>
-        </div>
-        {shown === 0 ? <p className={styles.hint}>{t.lead}</p> : null}
-      </section>
+      <Steps steps={STEPS} current={stage} open={done ? ["rain", "climb", ...(scene ? (["scene"] as const) : [])] : ["rain"]} onPick={go} />
 
-      <ol className={styles.lines}>
-        {rain.lines.slice(0, shown).map((line) => (
-          <li key={line.id} className={styles.line}>
-            <LineView line={line} state={state} since={since} />
-          </li>
-        ))}
-      </ol>
-
-      {done ? (
+      {stage === "rain" ? (
         <>
-          <section className={page.section}>
-            <h3 className={page.h2}>{t.climb}</h3>
-            <p className={page.note}>{t.climbLead}</p>
-            {rain.climbs.map((c) => (
-              <Climb key={c.id} climb={c} state={state} since={since} />
-            ))}
-          </section>
-          <div className={page.actions}>
-            <button type="button" className="btn" onClick={next}>
-              {t.next}
-              <Icon name="arrow" size={18} />
-            </button>
-            {scene ? (
-              <button
-                type="button"
-                className="btn-quiet"
-                onClick={() => {
-                  stop();
-                  goToScene(scene);
-                  router.push("/app/scene");
-                }}
-              >
-                {t.toScene}
+          <section className={styles.head}>
+            <h2 className={styles.title}>{rain.title}</h2>
+            <p className={styles.lead}>{rain.lead}</p>
+            <div className={styles.branches} aria-label={t.branches}>
+              {rain.branches.map((id) => {
+                const b = branchById(id);
+                return b ? <BranchRow key={id} branch={b} onWord={(word) => open({ word, from: { kind: "rain", id: rain.id } })} /> : null;
+              })}
+            </div>
+            <div className={styles.controls}>
+              <button type="button" className={done ? "btn-quiet" : "btn"} onClick={() => (playing ? stop() : void run())}>
+                <Icon name={done ? "replay" : "speaker"} size={20} />
+                {done ? t.replay : t.playAll}
               </button>
-            ) : null}
-            <button type="button" className="btn-quiet" onClick={() => setChoosing(true)}>
-              {t.choose}
-            </button>
+            </div>
+            {shown === 0 ? <p className={styles.hint}>{t.lead}</p> : null}
+          </section>
+
+          <ol className={styles.lines}>
+            {rain.lines.slice(0, shown).map((line) => (
+              <li key={line.id} className={styles.line}>
+                <LineView line={line} state={state} since={since} />
+              </li>
+            ))}
+          </ol>
+
+          {done ? (
+            <div className={page.actions}>
+              <button type="button" className="btn" onClick={() => go("climb")}>
+                <Icon name="up" size={18} />
+                {t.toClimb}
+              </button>
+              <button type="button" className="btn-quiet" onClick={() => setChoosing(true)}>
+                {t.choose}
+              </button>
+            </div>
+          ) : null}
+        </>
+      ) : (
+        <>
+          <section className={styles.head}>
+            <p className={styles.kicker}>
+              {rain.title}
+              {rain.climbs.length > 1 ? <span className={styles.count}>{t.climbCount(climbAt + 1, rain.climbs.length)}</span> : null}
+            </p>
+            <p className={page.note}>{t.climbLead}</p>
+          </section>
+          {climb ? <Climb key={climb.id} climb={climb} state={state} since={since} onTop={() => setTops((x) => new Set(x).add(climbAt))} /> : null}
+          <div className={page.actions}>
+            {!lastClimb ? (
+              <button type="button" className={tops.has(climbAt) ? "btn" : "btn-quiet"} onClick={nextClimb}>
+                {t.nextClimb}
+                <Icon name="arrow" size={18} />
+              </button>
+            ) : (
+              <>
+                {scene ? (
+                  <button type="button" className={tops.has(climbAt) ? "btn" : "btn-quiet"} onClick={toScene}>
+                    {t.toScene}
+                    <Icon name="arrow" size={18} />
+                  </button>
+                ) : null}
+                <button type="button" className="btn-quiet" onClick={next}>
+                  {t.next}
+                </button>
+              </>
+            )}
           </div>
         </>
-      ) : null}
+      )}
 
       <Sheet open={choosing} onClose={() => setChoosing(false)} closeLabel={ja.common.close} title={<p className={styles.sheetTitle}>{t.chooseTitle}</p>}>
         <ul className={page.rows}>

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   allLines,
   BRANCHES,
+  everydayOf,
   hits,
   LADDER,
   markSpans,
@@ -75,6 +76,7 @@ test("speakers and listeners are known; a climb is said by わたし and answere
   }
   for (const rain of RAINS) {
     assert.ok(rain.lines.length >= 8, `${rain.id} is a short rain`);
+    assert.ok(rain.climbs.length >= 1, `${rain.id} has nothing to climb`);
     for (const b of rain.branches) assert.ok(BRANCHES.some((x) => x.id === b), `${rain.id}: ${b}`);
     for (const c of rain.climbs) {
       assert.ok(c.steps.length >= 2, c.id);
@@ -161,4 +163,17 @@ test("cores find every form of their word", () => {
 
 test("cores do not fire on words that only look alike", () => {
   for (const [word, texts] of Object.entries(LOOKALIKES)) for (const t of texts) assert.equal(hits(t, word).length, 0, `${word} found in "${t}"`);
+});
+
+test("the everyday word over a lit 드시다 the AI wrote: 마시다 after a drink, 먹다 otherwise", () => {
+  const over = (text) => {
+    const [h] = hits(text, "드시다");
+    return everydayOf({ word: "드시다", ...h }, text);
+  };
+  assert.equal(over("네, 두 분 다 따뜻한 커피 드신대요."), "마시다");
+  assert.equal(over("선배, 차 한잔 드실래요?"), "마시다");
+  assert.equal(over("할머니, 진지 드셨어요?"), "먹다");
+  assert.equal(over("선배는 뭐 드실 거예요?"), "먹다");
+  // A mark's own everyday word wins.
+  assert.equal(everydayOf({ word: "드시다", start: 0, end: 2, base: "마시다" }, "드시고 가세요?"), "마시다");
 });

@@ -19,7 +19,7 @@ const t = ja.rain;
  * 上げてみる: the same message, said to people higher and higher. Each step shows what changed from the one below
  * (underlined, the raised words coming up a step) and is heard in わたし's voice, then the person answers in theirs.
  */
-export function Climb({ climb, state, since }: { climb: ClimbContent; state: State; since: number }) {
+export function Climb({ climb, state, since, onTop }: { climb: ClimbContent; state: State; since: number; onTop?: () => void }) {
   const [at, setAt] = useState(0);
   const step = climb.steps[at];
   const prev = at > 0 ? climb.steps[at - 1].said : null;
@@ -30,6 +30,7 @@ export function Climb({ climb, state, since }: { climb: ClimbContent; state: Sta
   function go(i: number) {
     unlock();
     setAt(i);
+    if (i === climb.steps.length - 1) onTop?.();
     const s = climb.steps[i];
     if (prefNow("sound", true)) {
       void playInTurn([s.said, ...(s.reply ? [s.reply] : [])].map((l) => ({ sound: lineSound(l), text: l.ko })), undefined, 350);
