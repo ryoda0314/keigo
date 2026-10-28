@@ -1,4 +1,4 @@
-// A. 友だちとの반말なら話せる（わたし → 서준「잘 자.」）。目上の人の前だと、言葉が出てこない（할머니 に「할머니, 잘」まで打って
+// A. 友だちとの반말なら話せる（わたし → 친구「잘 자.」）。目上の人の前だと、言葉が出てこない（할머니 に「할머니, 잘」まで打って
 // 止まる）。同じ「おやすみ」が、相手が上がると語ごと替わる：上げてみる の「おやすみ」（sleep-a）の三段を、下から一段ずつ、
 // アプリの声で。いちばん上の 주무세요 に色が付き、上に ふだんの語 자다。足りないのは語尾ではなく語：枝が並ぶ。
 import type { CSSProperties, ReactNode } from "react";
@@ -27,7 +27,7 @@ export function Hook({ frame }: { frame: number }) {
       {/* 友だちとの반말なら：最初のコマから見えている */}
       <p style={{ ...big, position: "absolute", top: 230, left: 0, right: 0, ...out(t.stuck) }}>友だちとの{ko("반말")}なら、話せる。</p>
       <Card style={{ top: 480, ...out(t.stuck, 12, 16) }}>
-        <p style={who}>わたし → 서준</p>
+        <p style={who}>わたし → 친구</p>
         <p style={{ margin: 0, fontFamily: FONT.ko, fontSize: 84, lineHeight: 1.55 }}>
           잘 <span style={based}>자</span>.
         </p>
@@ -104,8 +104,8 @@ function Stuck({ frame }: { frame: number }) {
 
 /** 上げてみる の「おやすみ」：下の段から一つずつ、ひとつ上がるごとに右へ。 */
 const RUNGS: { person: string; at: (t: typeof T.hook) => number; clip: "sleep-a.1@f" | "sleep-a.2@f" | "sleep-a.3@f"; text: ReactNode }[] = [
-  { person: "서준", at: (t) => t.r1, clip: "sleep-a.1@f", text: <>잘 <span style={based}>자</span>.</> },
-  { person: "지은 선배", at: (t) => t.r2, clip: "sleep-a.2@f", text: <>선배, 잘 <span style={based}>자요</span>.</> },
+  { person: "친구", at: (t) => t.r1, clip: "sleep-a.1@f", text: <>잘 <span style={based}>자</span>.</> },
+  { person: "선배", at: (t) => t.r2, clip: "sleep-a.2@f", text: <>선배, 잘 <span style={based}>자요</span>.</> },
   { person: "할머니", at: (t) => t.r3, clip: "sleep-a.3@f", text: null },
 ];
 

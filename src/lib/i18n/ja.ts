@@ -50,15 +50,11 @@ export const ja = {
     toClimb: "上げてみる",
     climbLead: "相手を替えると、同じひとことが段を上る。",
     climbCount: (at: number, of: number) => `${at} / ${of}`,
-    nextClimb: "次の組へ",
+    onward: "次へ",
     up: "上げる",
     top: "いちばん上まで上がりました",
     again: "はじめから",
-    next: "次の雨",
-    choose: "雨を選ぶ",
-    chooseTitle: "雨を選ぶ",
     met: "浴びた",
-    toScene: "場面で言ってみる",
   },
 
   scene: {

@@ -8,7 +8,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { nameOf, PEOPLE, RAINS, rainLines, sampleLines, SCENES } from "../src/content/index.ts";
+import { roleOf, PEOPLE, RAINS, rainLines, sampleLines, SCENES } from "../src/content/index.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(root, "scripts/work/content-review.json");
@@ -85,7 +85,7 @@ for (const g of groups) {
   const issues = JSON.parse(res.choices[0].message.content).issues;
   for (const i of issues) {
     const line = g.lines.find((l) => l.id === i.id);
-    all.push({ group: g.id, ...i, ko: line?.ko ?? "", by: line ? nameOf(line.by) : "", to: line ? nameOf(line.to) : "" });
+    all.push({ group: g.id, ...i, ko: line?.ko ?? "", by: line ? roleOf(line.by) : "", to: line ? roleOf(line.to) : "" });
   }
   console.log(`${g.id}: ${issues.length ? issues.map((i) => `${i.id}(${i.severity})`).join(" ") : "ok"}`);
 }

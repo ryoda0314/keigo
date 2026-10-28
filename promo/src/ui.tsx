@@ -3,7 +3,7 @@
 // 文と印は、アプリの中身（../src/content）とアプリの関数（markSpans・everydayOf）をそのまま使う。
 import type { CSSProperties, ReactNode } from "react";
 import { Img, staticFile } from "remotion";
-import { branchById, everydayOf, markSpans, nameOf, SI_MARK, wordById, type Line } from "../../src/content/index.ts";
+import { branchById, everydayOf, markSpans, roleOf, SI_MARK, wordById, type Line } from "../../src/content/index.ts";
 import { C, FONT } from "./theme";
 
 // ---- アイコン（../src/components/Icon.tsx） ----------------------------------------------------------------------
@@ -316,7 +316,7 @@ export function WhoLine({ line }: { line: Line }) {
   return (
     <p style={{ margin: 0, display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "2px 8px", fontSize: 12.5, fontWeight: 600, color: C.muted }}>
       <span>
-        {nameOf(line.by)} → {nameOf(line.to)}
+        {roleOf(line.by)} → {roleOf(line.to)}
       </span>
       {line.about ? <span style={{ fontWeight: 500, color: C.faint }}>{line.about}のこと</span> : null}
     </p>

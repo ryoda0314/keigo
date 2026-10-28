@@ -2,10 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { branchById, RAINS, rainById, SCENES, wordsIn, type Rain as RainContent } from "@/content/index.ts";
+import { branchById, rainById, sceneOf, type Rain as RainContent } from "@/content/index.ts";
 import { lineSound, playInTurn, stop, unlock } from "@/components/audio";
 import { Icon } from "@/components/Icon";
-import { Sheet } from "@/components/Sheet";
 import { prefNow } from "@/components/local";
 import { ja } from "@/lib/i18n/ja";
 import { pickNext, recordVisit, setCurrent, type State } from "@/lib/record";
@@ -45,13 +44,6 @@ export function Rain() {
 const seen = (state: State, id: string) => state.visits.some((v) => v.kind === "rain" && v.id === id);
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-/** The scene that holds most of a rain's raised words, to say them there. */
-function sceneFor(rainId: string): string | null {
-  const words = wordsIn({ kind: "rain", id: rainId });
-  const best = SCENES.map((s) => ({ id: s.id, n: wordsIn({ kind: "scene", id: s.id }).filter((w) => words.includes(w)).length })).sort((a, b) => b.n - a.n)[0];
-  return best && best.n > 0 ? best.id : null;
-}
-
 const STEPS: { step: StepId; label: string }[] = [
   { step: "rain", label: t.steps.rain },
   { step: "climb", label: t.steps.climb },
@@ -65,7 +57,6 @@ function RainView({ rain, state }: { rain: RainContent; state: State }) {
   // A rain bathed in before is all there at once; a new one falls in as it is played.
   const [shown, setShown] = useState(before ? rain.lines.length : 0);
   const [playing, setPlaying] = useState(false);
-  const [choosing, setChoosing] = useState(false);
   // 浴びる, then 上げてみる: each on its own, so the climbs do not pile up under the rain.
   const [stage, setStage] = useState<"rain" | "climb">("rain");
   const [climbAt, setClimbAt] = useState(0);
@@ -74,9 +65,18 @@ function RainView({ rain, state }: { rain: RainContent; state: State }) {
   const [since] = useState(() => Date.now());
   const done = shown >= rain.lines.length;
   const finished = useRef(before);
-  const scene = sceneFor(rain.id);
+  const scene = sceneOf(rain.id);
+  // Gone on to its scene, the last step of the set: this rain is through, so 浴びる brings the next one. Set only once the
+  // page has left, or the next rain would show for a moment on the way out.
+  const through = useRef(false);
 
-  useEffect(() => () => stop(), []);
+  useEffect(
+    () => () => {
+      stop();
+      if (through.current) commit((s) => setCurrent(s, { rain: pickNext(s, "rain", Date.now(), rain.id) }));
+    },
+    [rain.id],
+  );
 
   // Once all of it has fallen, it counts as bathed in (its words met).
   useEffect(() => {
@@ -108,6 +108,7 @@ function RainView({ rain, state }: { rain: RainContent; state: State }) {
   function toScene() {
     if (!scene) return;
     stop();
+    through.current = true;
     goToScene(scene);
     router.push("/app/scene");
   }
@@ -125,13 +126,12 @@ function RainView({ rain, state }: { rain: RainContent; state: State }) {
     window.scrollTo({ top: 0 });
   }
 
-  const next = () => {
-    stop();
-    commit((s) => setCurrent(s, { rain: pickNext(s, "rain", Date.now(), rain.id) }));
-  };
-
   const climb = rain.climbs[climbAt];
   const lastClimb = climbAt === rain.climbs.length - 1;
+  // One way on from 上げてみる, along the set: the next climb, then the scene. No 次の雨 here: the next rain comes once
+  // the scene has been gone to.
+  const onward = !lastClimb ? rain.climbs[climbAt + 1].title : t.steps.scene;
+  const goOn = () => (lastClimb ? toScene() : nextClimb());
 
   return (
     <>
@@ -171,9 +171,6 @@ function RainView({ rain, state }: { rain: RainContent; state: State }) {
                 <Icon name="up" size={18} />
                 {t.toClimb}
               </button>
-              <button type="button" className="btn-quiet" onClick={() => setChoosing(true)}>
-                {t.choose}
-              </button>
             </div>
           ) : null}
         </>
@@ -188,54 +185,15 @@ function RainView({ rain, state }: { rain: RainContent; state: State }) {
           </section>
           {climb ? <Climb key={climb.id} climb={climb} state={state} since={since} onTop={() => setTops((x) => new Set(x).add(climbAt))} /> : null}
           <div className={page.actions}>
-            {!lastClimb ? (
-              <button type="button" className={tops.has(climbAt) ? "btn" : "btn-quiet"} onClick={nextClimb}>
-                {t.nextClimb}
-                <Icon name="arrow" size={18} />
-              </button>
-            ) : (
-              <>
-                {scene ? (
-                  <button type="button" className={tops.has(climbAt) ? "btn" : "btn-quiet"} onClick={toScene}>
-                    {t.toScene}
-                    <Icon name="arrow" size={18} />
-                  </button>
-                ) : null}
-                <button type="button" className="btn-quiet" onClick={next}>
-                  {t.next}
-                </button>
-              </>
-            )}
+            <button type="button" className={tops.has(climbAt) ? "btn" : "btn-quiet"} onClick={goOn}>
+              {t.onward}
+              <span className={styles.whither}>{onward}</span>
+              <Icon name="arrow" size={18} />
+            </button>
           </div>
         </>
       )}
 
-      <Sheet open={choosing} onClose={() => setChoosing(false)} closeLabel={ja.common.close} title={<p className={styles.sheetTitle}>{t.chooseTitle}</p>}>
-        <ul className={page.rows}>
-          {RAINS.map((r) => (
-            <li key={r.id}>
-              <button
-                type="button"
-                className={page.row}
-                onClick={() => {
-                  stop();
-                  setChoosing(false);
-                  commit((s) => setCurrent(s, { rain: r.id }));
-                }}
-              >
-                <span className={page.rowMain}>
-                  <span className={page.rowTitle}>{r.title}</span>
-                  <span className={`${page.rowSub} t-ko`} lang="ko">
-                    {r.branches.join("・")}
-                  </span>
-                </span>
-                {seen(state, r.id) ? <span className={page.met}>{t.met}</span> : null}
-                <Icon name="arrow" size={16} />
-              </button>
-            </li>
-          ))}
-        </ul>
-      </Sheet>
     </>
   );
 }

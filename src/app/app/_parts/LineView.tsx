@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { nameOf, type Line } from "@/content/index.ts";
+import { roleOf, type Line } from "@/content/index.ts";
 import { lineSound } from "@/components/audio";
 import { Ko, type KoDiff, type KoMark } from "@/components/Ko";
 import { Speak } from "@/components/Speak";
@@ -12,12 +12,15 @@ import { useOpenBranch } from "./BranchHost";
 import { lineMarks } from "./marks";
 import styles from "./line.module.css";
 
-/** Who says it to whom, and whose the raised words are when it is a third person: わたし → 할머니 ・ 서준のおばあさんのこと. */
+/**
+ * Who says it to whom, by what they are to わたし, and whose the raised words are when it is a third person:
+ * わたし → 할머니 ・ 친구のおばあさんのこと.
+ */
 export function WhoLine({ line }: { line: Line }) {
   return (
     <p className={styles.who}>
       <span>
-        {nameOf(line.by)} {ja.who.to(nameOf(line.to))}
+        {roleOf(line.by)} {ja.who.to(roleOf(line.to))}
       </span>
       {line.about ? <span className={styles.about}>{ja.who.about(line.about)}</span> : null}
     </p>

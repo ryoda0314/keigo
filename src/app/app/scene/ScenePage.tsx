@@ -72,7 +72,7 @@ function SceneView({ scene, state }: { scene: Scene; state: State }) {
     <>
       <section className={styles.card}>
         <p className={styles.theme}>
-          {PLACES[scene.place]} · {person.short}
+          {PLACES[scene.place]} · {person.role}
         </p>
         <h2 className={styles.title}>{scene.title}</h2>
         <p className={styles.situation}>{scene.situation}</p>

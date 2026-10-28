@@ -11,6 +11,7 @@ export const PEOPLE: Record<PersonId, Person> = {
     kana: "ソジュン",
     call: "서준아",
     short: "서준",
+    role: "친구",
     about: "同い年の友だち。同じ授業をとっている。",
     speaks: "반말",
     voice: "Achird",
@@ -25,6 +26,7 @@ export const PEOPLE: Record<PersonId, Person> = {
     kana: "チウン",
     call: "선배",
     short: "지은 선배",
+    role: "선배",
     about: "一つ上の先輩。同じサークル。",
     speaks: "반말",
     voice: "Sulafat",
@@ -39,6 +41,7 @@ export const PEOPLE: Record<PersonId, Person> = {
     kana: "パク・チョンホ",
     call: "교수님",
     short: "박 교수님",
+    role: "교수님",
     about: "指導の教授。50代。",
     speaks: "해요체",
     voice: "Sadaltager",
@@ -53,6 +56,7 @@ export const PEOPLE: Record<PersonId, Person> = {
     kana: "キム・スンジャ",
     call: "할머니",
     short: "할머니",
+    role: "할머니",
     about: "下宿のおばあさん。70代。ご飯を作ってくれる。",
     speaks: "반말",
     voice: "Gacrux",
@@ -68,6 +72,7 @@ export const PEOPLE: Record<PersonId, Person> = {
     kana: "チェ・ミンホ",
     call: "사장님",
     short: "사장님",
+    role: "사장님",
     about: "バイト先のカフェの社長。40代。",
     speaks: "반말（お客さんには上の語）",
     voice: "Alnilam",
@@ -82,6 +87,7 @@ export const PEOPLE: Record<PersonId, Person> = {
     kana: "ハン・ミギョン",
     call: "어머님",
     short: "서준 어머님",
+    role: "친구 어머님",
     about: "서준のお母さん。50代。",
     speaks: "반말",
     voice: "Despina",
@@ -123,11 +129,11 @@ export function fallbackOf(voice: string): string | null {
   return me?.fallback ?? null;
 }
 
-/** A listener or speaker as named in a label: わたし, 서준, 박 교수님, お客さん. */
-export function nameOf(who: ListenerId): string {
+/** A listener or speaker in a label that shows the relationship: わたし, 친구, 선배, 교수님, お客さん. */
+export function roleOf(who: ListenerId): string {
   if (who === "me") return "わたし";
   if (who === "guest") return "お客さん";
-  return PEOPLE[who].short;
+  return PEOPLE[who].role;
 }
 
 export const PLACES: Record<PlaceId, string> = {

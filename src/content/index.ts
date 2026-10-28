@@ -1,10 +1,10 @@
 import { BRANCHES, GROUPS, SI_CORE, SI_MARK, WORDS } from "./branches.ts";
-import { fallbackOf, LADDER, ME_STYLE, ME_VOICES, nameOf, paceOf, PEOPLE, PLACES, styleOf, VOICES, voiceOf } from "./cast.ts";
+import { fallbackOf, LADDER, ME_STYLE, ME_VOICES, roleOf, paceOf, PEOPLE, PLACES, styleOf, VOICES, voiceOf } from "./cast.ts";
 import { RAINS } from "./rains.ts";
 import { SCENES } from "./scenes.ts";
 import type { Branch, Line, Mark, Rain, Scene, Word } from "./types.ts";
 
-export { BRANCHES, fallbackOf, GROUPS, LADDER, ME_STYLE, ME_VOICES, nameOf, paceOf, PEOPLE, PLACES, RAINS, SCENES, SI_CORE, SI_MARK, styleOf, VOICES, voiceOf, WORDS };
+export { BRANCHES, fallbackOf, GROUPS, LADDER, ME_STYLE, ME_VOICES, roleOf, paceOf, PEOPLE, PLACES, RAINS, SCENES, SI_CORE, SI_MARK, styleOf, VOICES, voiceOf, WORDS };
 export type * from "./types.ts";
 export type { MeVoice } from "./cast.ts";
 
@@ -124,6 +124,16 @@ export function wordsIn(place: { kind: "rain" | "scene"; id: string }): string[]
           return s ? [s.line, ...sampleLines(s)] : [];
         })();
   return [...new Set(lines.flatMap(raisedIn))];
+}
+
+/**
+ * The scene a rain leads into (浴びる → 上げてみる → 場面で言う is one set): the one holding most of its raised words, the
+ * first of them on a tie. Every rain has one (the content test).
+ */
+export function sceneOf(rainId: string): string | null {
+  const words = wordsIn({ kind: "rain", id: rainId });
+  const best = SCENES.map((s) => ({ id: s.id, n: wordsIn({ kind: "scene", id: s.id }).filter((w) => words.includes(w)).length })).sort((a, b) => b.n - a.n)[0];
+  return best && best.n > 0 ? best.id : null;
 }
 
 /** Lines a word turns up in, rains first, then scenes: to hear it again from its branch. */

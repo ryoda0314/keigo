@@ -59,7 +59,9 @@ record.
   something else forward, a brief in English for the person). Every raised word turns up in a rain and in two or more
   places in all.
 - `cast.ts`: the people (서준, 지은 선배, 박 교수님, 할머니 of the boarding house, 사장님 of the cafe, 서준's mother), how
-  わたし calls them, how they speak to わたし, their voices, styles and personas.
+  わたし calls them, how they speak to わたし, their voices, styles and personas. A label that shows the relationship (who
+  says it to whom, a climb's steps, a scene's person, an `about`) uses what they are to わたし (`role`, `roleOf`: 친구,
+  선배, 교수님, 친구 어머님; 친구のおばあさん), not their name; the conversation keeps the name (`short`).
 - Marks name a word and the exact text in the line; `markSpans` places each where its text occurs, its core fires and no
   earlier mark is (the 께 of 께서 is not 께). `everydayOf` gives the word shown above it: the mark's own `base` when it is
   not the usual one (커피 드실래요? is 마시다, 축하드려요 is 하다, 몇 분 is 몇 명), わたし stepping down mapped back
@@ -91,8 +93,11 @@ record.
   - 浴びる: the rain's branches as rows, its lines falling one by one with their voices (`playInTurn`), each with who says
     it to whom (`WhoLine`) and its words lit; once all have fallen it counts as bathed in, and 上げてみる opens.
   - 上げてみる: one climb at a time (`_rain/Climb.tsx`: the people as steps; 上げる moves one up, underlines what changed
-    from the step below, the lit words rise, and わたし's line and the reply are heard). 次の組へ, and after the last
-    場面で言ってみる (the scene holding most of the rain's words, `go.ts`) and 次の雨.
+    from the step below, the lit words rise, and わたし's line and the reply are heard). A person said to twice in a climb
+    is told apart by whose matter it is (the step's `about`). Below it one button, 次へ, along the set: the next climb,
+    then 場面で言う (the scene holding most of the rain's words, `sceneOf`; every rain has one). Going to the scene
+    finishes the rain, and 浴びる brings the next one (`pickNext`, set once the page has left). No 次の雨 and no rain
+    chooser beside it: they made noise next to the way on; a rain is also reached from a word's branch.
 - `/app/scene` 場面で言う (`scene/ScenePage.tsx`): ことのは's scene with `Conversation` and `Composer` (Korean and Japanese
   mixed, the microphone through `/api/hear`); samples only when opened, recorded as support.
 - `/app/eda` 枝: every branch by group as a map to look over, each raised word with its dots. `/app/me` 自分: これまで,

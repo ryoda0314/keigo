@@ -13,6 +13,7 @@ import {
   rainLines,
   sampleLines,
   SCENES,
+  sceneOf,
   SI_MARK,
   wordById,
   WORDS,
@@ -163,6 +164,14 @@ test("cores find every form of their word", () => {
 
 test("cores do not fire on words that only look alike", () => {
   for (const [word, texts] of Object.entries(LOOKALIKES)) for (const t of texts) assert.equal(hits(t, word).length, 0, `${word} found in "${t}"`);
+});
+
+test("every rain leads into a scene: 浴びる → 上げてみる → 場面で言う is one set", () => {
+  for (const r of RAINS) assert.ok(sceneOf(r.id), `${r.id} has no scene to go on to`);
+});
+
+test("a climb's about reads as someone's matter (a person, not what is done)", () => {
+  for (const r of RAINS) for (const c of r.climbs) for (const s of c.steps) if (s.said.about) assert.doesNotMatch(s.said.about, /に言う|する$/, `${s.said.id}: ${s.said.about}`);
 });
 
 test("the everyday word over a lit 드시다 the AI wrote: 마시다 after a drink, 먹다 otherwise", () => {

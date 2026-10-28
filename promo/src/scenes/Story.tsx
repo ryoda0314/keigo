@@ -1,7 +1,7 @@
 // C–F. 覚え方が、そのままアプリの流れになっていることを、アプリの画面で。左に映像の言葉。
-//   浴びる：食べる・飲む の雨。文が一つずつ降ってくる（eat.1〜eat.7、アプリの並びのまま）。서준 の「우리 할머니는 아침을 꼭
+//   浴びる：食べる・飲む の雨。文が一つずつ降ってくる（eat.1〜eat.7、アプリの並びのまま）。친구（서준）の「우리 할머니는 아침을 꼭
 //     드셔.」：반말でも、話の中のおばあさんは上げる。드셔 を押すと 드시다 の枝：먹다 › 드시다 › 잡수시다 が下から一段ずつ。
-//   上げてみる：ご飯、食べた？ を 서준 → 지은 선배 → 박 교수님 → 할머니 と上げる。替わった字に下線、上の語は一段上がる。
+//   上げてみる：ご飯、食べた？ を 친구 → 선배 → 교수님 → 할머니 と上げる。替わった字に下線、上の語は一段上がる。
 //   場面で言う：下宿の夕飯。할머니 밥 먹었어요? 나는 友だちと食べてきた。→ 할머니, 진지 드셨어요? 저는 친구랑 먹고 왔어요.
 //     雨で出会った 진지・드시다 は紫（アプリの「前に出会った語」）。할머니 の返事。直しと返事は本物（scene.json）。
 //   数日後、窓ぎわのお客さん：네, 두 분 다 따뜻한 커피 드신대요. そのままで自然。自分：できたこと（前は AI が補った 드시다）。
@@ -125,7 +125,7 @@ const quiet = (children: ReactNode, style?: CSSProperties) => (
 
 const RAIN = rainById("eat")!;
 const LINES = RAIN.lines.slice(0, RAIN_LINES);
-/** 光らせる文：서준 → わたし「우리 할머니는 아침을 꼭 드셔.」（서준のおばあさんのこと）。 */
+/** 光らせる文：친구 → わたし「우리 할머니는 아침을 꼭 드셔.」（친구のおばあさんのこと）。 */
 const FOCUS = LINES.findIndex((l) => l.id === "eat.6");
 
 function RainScreen({ frame }: { frame: number }) {
@@ -330,7 +330,7 @@ function ClimbScreen({ frame }: { frame: number }) {
                     fontSize: 13,
                   }}
                 >
-                  {PEOPLE[s.said.to as PersonId].short}
+                  {PEOPLE[s.said.to as PersonId].role}
                 </span>
               </li>
             );
@@ -357,7 +357,7 @@ function ClimbScreen({ frame }: { frame: number }) {
             <Btn press={pressed !== undefined ? frame - pressed : -99}>
               <Icon name="up" size={18} />
               上げる
-              <span style={{ fontWeight: 500, opacity: 0.85 }}>{PEOPLE[CLIMB.steps[at + 1].said.to as PersonId].short}</span>
+              <span style={{ fontWeight: 500, opacity: 0.85 }}>{PEOPLE[CLIMB.steps[at + 1].said.to as PersonId].role}</span>
             </Btn>
           )}
         </div>
@@ -375,7 +375,7 @@ function SceneCard({ scene, playing }: { scene: Scene; playing: number }) {
   return (
     <section style={{ display: "flex", flexDirection: "column", gap: 10, padding: "20px 0 16px", borderBottom: `1px solid ${C.line}` }}>
       <p style={{ margin: 0, fontSize: 12.5, fontWeight: 600, color: C.accent }}>
-        {PLACES[scene.place]} · {person.short}
+        {PLACES[scene.place]} · {person.role}
       </p>
       <h2 style={{ margin: 0, fontSize: 22, fontWeight: 600, letterSpacing: "-0.01em" }}>{scene.title}</h2>
       <p style={{ margin: 0, fontSize: 15, lineHeight: 1.7, color: C.ink2 }}>{scene.situation}</p>

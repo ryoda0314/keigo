@@ -3,6 +3,8 @@
 /* 上げてみる keeps the rain's name above it, small, and which climb of how many. */
 .kicker { margin: 0; display: flex; align-items: baseline; gap: 10px; font-size: 15px; font-weight: 600; color: var(--ink-2); }
 .count { font-family: var(--font-en); font-size: 13px; font-weight: 500; color: var(--muted); }
+/* Where 次へ goes: the next climb's name, 場面で言う, or 次の雨. */
+.whither { font-weight: 500; opacity: 0.85; }
 .lead { margin: 0; font-size: 15px; line-height: 1.7; color: var(--ink-2); }
 .branches { display: flex; flex-direction: column; gap: 8px; padding: 10px 0 4px; }
 .controls { display: flex; gap: 10px; padding-top: 10px; }
@@ -14,4 +16,3 @@
 .line:last-child { border-bottom: 0; }
 @keyframes fall { from { opacity: 0; transform: translateY(-18px); } }
 
-.sheetTitle { margin: 0; font-size: 17px; font-weight: 600; }

@@ -7,9 +7,12 @@
 .people > li:nth-child(3) { margin-bottom: 8px; }
 .people > li:nth-child(4) { margin-bottom: 12px; }
 .person {
-  min-height: 34px; padding: 0 12px; border: 1px solid var(--line-2); border-radius: 999px; background: var(--paper);
-  font-size: 13px; color: var(--muted); cursor: pointer;
+  min-height: 34px; padding: 2px 12px; border: 1px solid var(--line-2); border-radius: 999px; background: var(--paper);
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 13px; line-height: 1.35; color: var(--muted); cursor: pointer;
 }
+/* Whose matter it is, when the same person is said to twice. */
+.about { font-size: 11px; font-weight: 400; opacity: 0.85; }
 .person:hover { border-color: var(--accent); }
 .past { color: var(--ink-2); border-color: var(--line-2); background: var(--surface); }
 .here { border-color: var(--accent); background: var(--tint); color: var(--accent); font-weight: 600; }

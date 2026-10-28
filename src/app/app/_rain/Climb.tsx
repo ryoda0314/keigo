@@ -37,6 +37,12 @@ export function Climb({ climb, state, since, onTop }: { climb: ClimbContent; sta
     }
   }
 
+  // The steps are what each person is to わたし (친구 → 선배 → 교수님). One said to twice (친구, then 친구 about the
+  // professor) is told apart by whose matter it is.
+  const twice = (i: number) => climb.steps.some((s, k) => k !== i && s.said.to === climb.steps[i].said.to);
+  const aboutOf = (i: number) => (twice(i) && climb.steps[i].said.about ? ja.who.about(climb.steps[i].said.about!) : null);
+  const roleOf = (i: number) => PEOPLE[climb.steps[i].said.to as PersonId].role;
+
   // What changed from the step below: added letters underlined, and the lit words among them rise.
   const added: KoDiff[] = prev ? diffRanges(prev.ko, step.said.ko, "ko").added.map((r) => ({ ...r, kind: "ins" as const })) : [];
   const marks = lineMarks(step.said, state, since).map((m) => ({ ...m, rise: added.some((d) => d.start < m.end && d.end > m.start) }));
@@ -45,16 +51,14 @@ export function Climb({ climb, state, since, onTop }: { climb: ClimbContent; sta
     <article className={styles.climb}>
       <h4 className={styles.title}>{climb.title}</h4>
       <ol className={styles.people}>
-        {climb.steps.map((s, i) => {
-          const person = PEOPLE[s.said.to as PersonId];
-          return (
-            <li key={s.said.id}>
-              <button type="button" className={i === at ? `${styles.person} ${styles.here}` : i < at ? `${styles.person} ${styles.past}` : styles.person} onClick={() => go(i)} aria-current={i === at ? "step" : undefined}>
-                {person.short}
-              </button>
-            </li>
-          );
-        })}
+        {climb.steps.map((s, i) => (
+          <li key={s.said.id}>
+            <button type="button" className={i === at ? `${styles.person} ${styles.here}` : i < at ? `${styles.person} ${styles.past}` : styles.person} onClick={() => go(i)} aria-current={i === at ? "step" : undefined}>
+              {roleOf(i)}
+              {aboutOf(i) ? <span className={styles.about}>{aboutOf(i)}</span> : null}
+            </button>
+          </li>
+        ))}
       </ol>
       <div key={step.said.id} className={styles.stage} style={{ "--step": at } as React.CSSProperties}>
         <LineView line={step.said} state={state} since={since} size="lg" marks={marks} diff={added} />
@@ -77,7 +81,7 @@ export function Climb({ climb, state, since, onTop }: { climb: ClimbContent; sta
           <button type="button" className="btn" onClick={() => go(at + 1)}>
             <Icon name="up" size={18} />
             {t.up}
-            <span className={styles.toWhom}>{PEOPLE[climb.steps[at + 1].said.to as PersonId].short}</span>
+            <span className={styles.toWhom}>{aboutOf(at + 1) ?? roleOf(at + 1)}</span>
           </button>
         )}
       </div>

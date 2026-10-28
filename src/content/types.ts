@@ -83,8 +83,13 @@ export type Person = {
   kana: string;
   /** How わたし calls them: 서준아, 선배, 교수님. */
   call: string;
-  /** Short, for labels: 서준, 지은 선배, 박 교수님. */
+  /** Short, with the name, for the conversation (the reply's header): 서준, 지은 선배, 박 교수님. */
   short: string;
+  /**
+   * What they are to わたし, for the labels that show the relationship (who says it to whom, a climb's steps, a scene's
+   * person): 친구, 선배, 교수님. There the relationship is the point, and a name says less than 선배 does.
+   */
+  role: string;
   about: string;
   /** How they speak to わたし. */
   speaks: string;
