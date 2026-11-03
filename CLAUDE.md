@@ -24,10 +24,11 @@ record.
   happen in ことのあめ (`NEXT_PUBLIC_KOTONOAME_URL`).
 - Use is counted as ことのね counts its own, for ことのあめ's admin (`src/components/usage.ts`, `src/lib/usage.ts`): ことのあめ's
   `pl_app_ping` (`../polylinga/supabase/migrations/20261103000000_app_usage.sql`, app `kotonoeda`) gets the app's name, a
-  random number made on the device (`keigo:device`), the kind and whether it was opened from the home screen, by a plain
-  fetch with the anon key (never `sync.ts`'s client, so no account's token goes with it), and only on the public address
-  (`NEXT_PUBLIC_SITE_URL`, `countsHere`) of a production build. `open` once a page load (`_parts/CountOpen.tsx` in the
-  app's layout); `learn` when a rain is finished by going on to its scene (`toScene` in `_rain/Rain.tsx`, every time: a
+  random number made on the device (`keigo:device`), the kind, whether it was opened from the home screen, whether an
+  account is signed in here (only the yes or no, from `account()`) and the kind of device (`platformOf`: ios, android,
+  pc, other), by a plain fetch with the anon key (never `sync.ts`'s client, so no account's id or token goes with it),
+  and only on the public address (`NEXT_PUBLIC_SITE_URL`, `countsHere`) of a production build. `open` once a page load
+  (`_parts/CountOpen.tsx` in the app's layout); `learn` when a rain is finished by going on to its scene (`toScene` in `_rain/Rain.tsx`, every time: a
   rain bathed in before is not recorded as a visit again); `say` when `/api/turn` took a sentence in (`send` in
   `talk.ts`, once however often it was asked back about or sent again). 設定 → 使われ方の数を送る switches it off
   (`keigo:sendUsage`, through `usePref`). Never the record, a name, an email or a sentence.

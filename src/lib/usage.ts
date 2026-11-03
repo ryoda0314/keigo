@@ -6,6 +6,23 @@
  */
 export type UsageKind = "open" | "learn" | "say";
 
+/** The kind of device, as ことのあめ's admin sorts them. */
+export type Platform = "ios" | "android" | "pc" | "other";
+
+/**
+ * The kind of device from the browser's user agent. An iPad says it is a Mac (iPadOS), but a Mac has no touch screen;
+ * Android is asked before Linux, which it also says.
+ */
+export function platformOf(userAgent: string, maxTouchPoints: number): Platform {
+  if (typeof userAgent !== "string" || !userAgent) return "other";
+  const touch = typeof maxTouchPoints === "number" ? maxTouchPoints : 0;
+  if (/iPhone|iPad|iPod/.test(userAgent)) return "ios";
+  if (/Macintosh/.test(userAgent) && touch > 1) return "ios";
+  if (/Android/.test(userAgent)) return "android";
+  if (/Windows|Macintosh|CrOS|X11|Linux/.test(userAgent)) return "pc";
+  return "other";
+}
+
 /**
  * Counted only on the public address (`site`) of a production build: never `npm run dev`, a Vercel preview or a copy
  * served elsewhere. False when either address cannot be read.

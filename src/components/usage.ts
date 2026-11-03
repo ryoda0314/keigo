@@ -2,13 +2,15 @@
 
 // 使われ方の数: how many devices use this app, counted as ことのね counts its own (its src/util/usage.ts), for ことのあめ's
 // admin screen. What goes: this app's name, a number made on this device (a random UUID, tied to no person and no
-// account), the kind (lib/usage.ts: opened, a rain finished, a sentence taken in) and whether it was opened from the home
-// screen. Nothing else: no account, name, email or sentence. A plain fetch with the anon key to ことのあめ's pl_app_ping
-// (../polylinga/supabase/migrations/20261103000000_app_usage.sql), never sync.ts's Supabase client, so a signed-in
-// learner's token does not go with it. Only on the public address (NEXT_PUBLIC_SITE_URL), never waited for, and nothing
-// happens when it cannot be sent. The learner switches it off in 設定 (SEND_USAGE).
+// account), the kind (lib/usage.ts: opened, a rain finished, a sentence taken in), whether it was opened from the home
+// screen, whether a ことのあめ account is signed in here (only yes or no, from the session kept on the device) and the
+// kind of device (platformOf). Nothing else: no account id, name, email, token or sentence. A plain fetch with the anon
+// key to ことのあめ's pl_app_ping (../polylinga/supabase/migrations/20261103000000_app_usage.sql), never sync.ts's
+// Supabase client, so a signed-in learner's token does not go with it. Only on the public address (NEXT_PUBLIC_SITE_URL),
+// never waited for, and nothing happens when it cannot be sent. The learner switches it off in 設定 (SEND_USAGE).
 import { APP } from "@/lib/connect";
-import { countsHere, type UsageKind } from "@/lib/usage";
+import { account } from "@/lib/sync";
+import { countsHere, platformOf, type UsageKind } from "@/lib/usage";
 import { prefNow } from "./local";
 
 const URL_ = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -43,12 +45,22 @@ export function countUsage(kind: UsageKind): void {
   if (!countsHere(location.origin, SITE, process.env.NODE_ENV === "production") || !prefNow(SEND_USAGE, true)) return;
   const device = deviceId();
   if (!device) return;
-  fetch(`${URL_}/rest/v1/rpc/pl_app_ping`, {
-    method: "POST",
-    headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ p_app: APP, p_device: device, p_kind: kind, p_standalone: standalone() }),
-    keepalive: true,
-  }).catch(() => {
-    // Not counted, that is all.
-  });
+  const platform = platformOf(navigator.userAgent, navigator.maxTouchPoints ?? 0);
+  const home = standalone();
+  account()
+    .then(
+      (a) => !!a,
+      () => false,
+    )
+    .then((signedIn) =>
+      fetch(`${URL_}/rest/v1/rpc/pl_app_ping`, {
+        method: "POST",
+        headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ p_app: APP, p_device: device, p_kind: kind, p_standalone: home, p_signed_in: signedIn, p_platform: platform }),
+        keepalive: true,
+      }),
+    )
+    .catch(() => {
+      // Not counted, that is all.
+    });
 }
