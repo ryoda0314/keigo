@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ME_CHOICES, SPEEDS, type Speed } from "@/components/audio";
 import { Icon } from "@/components/Icon";
 import { useChoice, usePref } from "@/components/local";
+import { SEND_USAGE } from "@/components/usage";
 import { ja } from "@/lib/i18n/ja";
 import { useRecord } from "@/lib/store";
 import { account, resetRecord, signOut, type Account } from "@/lib/sync";
@@ -13,7 +14,7 @@ import styles from "./settings.module.css";
 
 const t = ja.settings;
 
-/** 設定とアカウント: how to hear and see, the ことのあめ account, and clearing the record. */
+/** 設定とアカウント: how to hear and see, the ことのあめ account, clearing the record, and the counts of use sent. */
 export function Settings() {
   const state = useRecord();
   const [sound, setSound] = usePref("sound", true);
@@ -21,6 +22,7 @@ export function Settings() {
   const [ruby, setRuby] = usePref("ruby", true);
   const [speed, setSpeed] = useChoice<Speed>("speed", SPEEDS, "1");
   const [voice, setVoice] = useChoice<(typeof ME_CHOICES)[number]>("voice", ME_CHOICES, "f");
+  const [sendUsage, setSendUsage] = usePref(SEND_USAGE, true);
   const [me, setMe] = useState<Account | null | undefined>(undefined);
   const [done, setDone] = useState(false);
   useEffect(() => {
@@ -130,6 +132,13 @@ export function Settings() {
           </button>
         </div>
         {done ? <p className={page.note}>{t.done}</p> : null}
+        <label className={styles.toggle}>
+          <span>
+            <span className={styles.toggleTitle}>{t.usage}</span>
+            <span className={page.note}>{t.usageLead}</span>
+          </span>
+          <input type="checkbox" checked={sendUsage} onChange={(e) => setSendUsage(e.target.checked)} />
+        </label>
       </section>
     </div>
   );

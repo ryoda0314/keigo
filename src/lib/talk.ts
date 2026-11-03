@@ -6,6 +6,7 @@ import { useSyncExternalStore } from "react";
 import { isRaised, markSpans, PEOPLE, type Line, type PersonId } from "@/content/index.ts";
 import { prefNow } from "@/components/local";
 import { playAll, replyItems } from "@/components/audio";
+import { countUsage } from "@/components/usage";
 import { dueKeys, historyOf, newId, putThread, recordResult, threadById, withTurn, type MeTurn, type Support, type ThemTurn, type Thread, type ThreadKind } from "./record.ts";
 import { commit, getState } from "./store.ts";
 
@@ -114,6 +115,9 @@ export async function send(threadId: string, input: string, opts: { support?: Su
     const next = withTurn(withTurn(t, done), reply);
     return recordResult(putThread(s, next), next, done, reply);
   });
+  // A sentence taken in (components/usage.ts): counted here rather than on sending, so one asked back about, or sent
+  // again after failing, counts once.
+  countUsage("say");
   if (prefNow("sound", true)) void playAll(replyItems(reply, PEOPLE[thread.person].voice));
   return { ok: true };
 }

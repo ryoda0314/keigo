@@ -6,6 +6,7 @@ import { branchById, rainById, sceneOf, type Rain as RainContent } from "@/conte
 import { lineSound, playInTurn, stop, unlock } from "@/components/audio";
 import { Icon } from "@/components/Icon";
 import { prefNow } from "@/components/local";
+import { countUsage } from "@/components/usage";
 import { ja } from "@/lib/i18n/ja";
 import { pickNext, recordVisit, setCurrent, type State } from "@/lib/record";
 import { commit, useRecord } from "@/lib/store";
@@ -109,6 +110,9 @@ function RainView({ rain, state }: { rain: RainContent; state: State }) {
     if (!scene) return;
     stop();
     through.current = true;
+    // Counted as a rain finished (components/usage.ts) here, not where it is first bathed in: a rain bathed in before is
+    // all there at once and not recorded again, yet going on to its scene finishes it every time.
+    countUsage("learn");
     goToScene(scene);
     router.push("/app/scene");
   }
